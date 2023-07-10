@@ -1,47 +1,55 @@
 __winc_id__ = "ae539110d03e49ea8738fd413ac44ba8"
 __human_name__ = "files"
 
-import os
+import os, re, os.path
+import os 
 from zipfile import ZipFile
+import shutil
 
-cwd = os.getcwd()
-print('Current Working Directory is: ', cwd)
-absolute_path = 'C:/Users/pA/Documents/Winc/files'
-os.chdir(absolute_path)
+os.chdir('files')
 
-######PART1############
+base_path = os.getcwd()
+cache_path = os.path.join(base_path, "cache")
+data_path = os.path.join(base_path, "data.zip")
+
+print(base_path)
+print(cache_path)
+print(data_path)
+###############################################
+
 def clean_cache():
-    path = './clean_cache'
-    dir_clean_cache = os.mkdir(path)
-    return dir_clean_cache
+   if os.path.exists(cache_path):
+      shutil.rmtree(cache_path)
+   os.mkdir(cache_path)
 
-#print(clean_cache())
-    
-######PART2############
-def cache_zip(path_zip,target_dir):
-  with ZipFile(path_zip, 'r') as zObject:
-   zObject.extractall(path=target_dir)  
+clean_cache()
+#################################################
+
+def cache_zip(zip_file_path,cache_path):
+  with ZipFile(zip_file_path, 'r') as zObject:
+   zObject.extractall(path=cache_path)  
             
-path_zip = 'C:/Users/pA/Documents/Winc/files/data.zip'
-path_dir = 'C:/Users/pA/Documents/winc/files/clean_cache'
+zip_path = os.path.join(base_path,'data.zip')
+target_path = os.path.join(base_path,'cache')
 
-cache_zip(path_zip,path_dir)
+print(target_path)
 
-#####PART3############
+cache_zip(data_path,cache_path)
+list_unzipped =os.listdir(target_path)
 
 def cached_files():
-   global list_unzipped
-   list_unzipped =os.listdir(path='C:/Users/pA/Documents/winc/files/clean_cache')
-   return list_unzipped
+    global cached_files_list
+    cached_files_list = []
+    for path in os.listdir(cache_path):
+        full_path = os.path.join(cache_path, path)
+        cached_files_list.append(full_path)
+    print(cached_files_list)
 
-print(cached_files())
 
 
-os.chdir('C:/Users/pA/Documents/winc/files/clean_cache')
-cwd1 = os.getcwd()
-print('Current Working Directory is: ', cwd1)
 
-directory =('C:/Users/pA/Documents/winc/files/clean_cache')
+cached_files()
+
 
 def find_password(password):
    for text in password:
@@ -54,5 +62,5 @@ def find_password(password):
              continue
          
 
-print(find_password(list_unzipped))
+print(find_password(cached_files_list))
 
